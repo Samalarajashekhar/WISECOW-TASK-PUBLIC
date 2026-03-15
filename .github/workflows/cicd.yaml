@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Build and Push the Docker image
+    - name: Build and Push the Docker image   # means comment
       run: | 
         docker build . --file Dockerfile --tag ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
         docker push ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
