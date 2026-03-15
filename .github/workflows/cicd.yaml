@@ -3,6 +3,13 @@ name: Build, Push & Deploy
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'wisecow.sh'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'wisecow.sh'
+
 
 jobs:
 
@@ -20,11 +27,11 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build --no-cache -t ${{ vars.DOCKER_IMAGE }}:${{ github.run_number }} .
+        docker build . --file Dockerfile --tag ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
 
     - name: Push Docker Image
       run: |
-        docker push ${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
+        docker push ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
 
   deploy:
     needs: build
