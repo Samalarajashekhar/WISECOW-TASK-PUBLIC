@@ -1,22 +1,11 @@
 FROM alpine:3.19
-
-# Install necessary packages
-RUN apk update && apk add --no-cache cowsay fortune netcat-openbsd
-
-# Copy the script into the container
-COPY wisecow.sh /app/wisecow.sh
-
-# Set the working directory
 WORKDIR /app
-
-# Make the script executable
-RUN chmod +x wisecow.sh
-
-# Expose the server port
+# Install required packages
+RUN apk add --no-cache bash fortune-mod netcat-openbsd curl \
+    && mkdir -p /usr/local/bin \
+    && curl -L https://raw.githubusercontent.com/tnalpgge/rank-amateur-cowsay/master/cowsay -o /usr/local/bin/cowsay \
+    && chmod +x /usr/local/bin/cowsay
+COPY wisecow.sh /app/
+RUN chmod +x /app/wisecow.sh
 EXPOSE 4499
-
-# Set the startup command
-CMD ["./wisecow.sh"]
-
-# Set PATH environment variable
-ENV PATH="/usr/games:${PATH}"
+CMD ["sh", "/app/wisecow.sh"]
