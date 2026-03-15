@@ -1,4 +1,4 @@
-FROM debian:bullseye-slim
+FROM lpine:3.19
 
 # Install necessary packages
 RUN apt-get update && apt-get install -y cowsay fortune ncat netcat-openbsd
