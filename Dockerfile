@@ -1,7 +1,7 @@
 FROM alpine:3.19
 
 # Install necessary packages
-RUN apt-get update && apt-get install -y cowsay fortune ncat netcat-openbsd
+RUN apk update && apk add --no-cache cowsay fortune netcat-openbsd
 
 # Copy the script into the container
 COPY wisecow.sh /app/wisecow.sh
