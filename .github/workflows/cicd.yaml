@@ -1,0 +1,42 @@
+name: Build, Push & Deploying into Minikube
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Login to DockerHub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build Docker Image
+      run: |
+        docker build . --file Dockerfile --tag ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
+
+    - name: Push Docker Image
+      run: |
+        docker push ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Deploying to Minikube
+      shell: 'C:\Program Files\Git\bin\bash.exe'
+      run: |
+        export DOCKER_REGISTRY=${{ vars.DOCKER_REGISTRY }}
+        export DOCKER_IMAGE=${{ vars.DOCKER_IMAGE }}
+        export BUILD_NUMBER=${{ github.run_number }}
+
+        envsubst < k8s/deployment.yaml | kubectl apply -f -
+        kubectl apply -f k8s/service.yaml
+        kubectl apply -f k8s/ingress.yaml
