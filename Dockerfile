@@ -1,18 +1,11 @@
-# Stage 1
-FROM debian:bullseye-slim AS builder
-
-RUN apt-get update && \
-    apt-get install -y cowsay fortune-mod netcat-openbsd && \
-    rm -rf /var/lib/apt/lists/*
-
-# Stage 2
-FROM debian:bullseye-slim
+FROM alpine:3.19
 
 WORKDIR /app
 
-COPY --from=builder /usr/games/cowsay /usr/games/cowsay
-COPY --from=builder /usr/games/fortune /usr/games/fortune
-COPY --from=builder /bin/nc /bin/nc
+RUN apk add --no-cache bash curl fortune netcat-openbsd
+
+RUN curl -L https://raw.githubusercontent.com/tnalpgge/rank-amateur-cowsay/master/cowsay \
+    -o /usr/local/bin/cowsay && chmod +x /usr/local/bin/cowsay
 
 COPY wisecow.sh .
 
