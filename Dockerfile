@@ -1,16 +1,23 @@
-FROM debian:bullseye-slim
+# Stage 1 - Builder
+FROM debian:bullseye-slim as builder
 
-WORKDIR /app
-
-# Install required packages
 RUN apt-get update && \
     apt-get install -y cowsay fortune-mod netcat-openbsd && \
     rm -rf /var/lib/apt/lists/*
 
-COPY wisecow.sh /app/
+# Stage 2 - Final Image
+FROM debian:bullseye-slim
 
-RUN chmod +x /app/wisecow.sh
+WORKDIR /app
+
+COPY --from=builder /usr/games/cowsay /usr/games/cowsay
+COPY --from=builder /usr/bin/fortune /usr/bin/fortune
+COPY --from=builder /bin/nc /bin/nc
+
+COPY wisecow.sh .
+
+RUN chmod +x wisecow.sh
 
 EXPOSE 4499
 
-CMD ["sh", "/app/wisecow.sh"]
+CMD ["sh","wisecow.sh"]
