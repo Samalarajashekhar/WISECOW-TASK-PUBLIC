@@ -27,11 +27,11 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build . --file Dockerfile --tag ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
+        docker build -t rajashekar121/wisecow-task:${{ github.run_number }}
 
     - name: Push Docker Image
       run: |
-        docker push ${{ vars.DOCKER_REGISTRY }}/${{ vars.DOCKER_IMAGE }}:${{ github.run_number }}
+        docker push rajashekar121/wisecow-task:${{ github.run_number }}
 
   deploy:
     needs: build
