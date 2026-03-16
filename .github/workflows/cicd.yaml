@@ -27,7 +27,7 @@ jobs:
 
     - name: Build Docker Image
       run: |
-        docker build -t rajashekar121/wisecow-task:${{ github.run_number }}
+        docker build -t rajashekar121/wisecow-task:${{ github.run_number }} .
 
     - name: Push Docker Image
       run: |
