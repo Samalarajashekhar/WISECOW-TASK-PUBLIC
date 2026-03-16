@@ -1,5 +1,5 @@
 # Stage 1 - Builder
-FROM debian:bullseye-slim as builder
+FROM debian:bullseye-slim AS builder
 
 RUN apt-get update && \
     apt-get install -y cowsay fortune-mod netcat-openbsd && \
